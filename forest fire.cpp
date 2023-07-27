@@ -45,57 +45,100 @@ Sample Output 2:
 using namespace std;
 
 
-void fire(vector <vector<int>>& a,int r,int c,int i,int j,int ct = 1){
-  if(a[i][j] <= ct and a[i][j] != 0){
-    return;
+int fire(vector <vector<int>>& a,int r,int c,int i,int j,int ct = 1,int ma = 0){
+  if(a[i][j] < ct and a[i][j] != 0){
+    return 0;
   }
-  a[i][j] = ct;
+  if(a[i][j] == 0){
+    a[i][j] = ct;
+  }
+  if(i+1 < r and j+1 < c){ //south east
+    if(a[i+1][j+1] == 0){
+      a[i+1][j+1] = ct+1;
+    }
+  }
+  if(i+1 < r and j-1 > -1){ //south west
+    if(a[i+1][j-1] == 0){
+      a[i+1][j-1] = ct+1;
+    }
+  }
+  if(i-1 > -1 and j-1 > -1){ //north west
+    if(a[i-1][j-1] == 0){
+      a[i-1][j-1] = ct+1;
+    }
+  }
+  if(i-1 > -1 and j+1 < c){ //north east
+    if(a[i-1][j+1] == 0){
+      a[i-1][j+1] = ct+1;
+    }
+  }
+  if(i+1 < r){ //south
+    if(a[i+1][j] == 0){
+      a[i+1][j] = ct+1;
+    }
+  }
+  if(i-1 > -1){ //north
+    if(a[i-1][j] == 0){
+      a[i-1][j] = ct+1;
+    }
+  }
+  if(j-1 > -1){ //west
+    if(a[i][j-1] == 0){
+      a[i][j-1] = ct+1;
+    }
+  }
+  if(j+1 < c){ //east
+    if(a[i][j+1] == 0){
+      a[i][j+1] = ct+1;
+    }
+  }
+  ma = max(ma,a[i][j]);
   if(i+1 < r and j+1 < c){ //south east
     if(a[i+1][j+1] >= 0){
-      fire(a,r,c,i+1,j+1,ct+1);
+      ma = max(fire(a,r,c,i+1,j+1,ct+1,ma),ma);
     }
   }
   if(i+1 < r and j-1 > -1){ //south west
     if(a[i+1][j-1] >= 0){
-      fire(a,r,c,i+1,j-1,ct+1);
+      ma = max(fire(a,r,c,i+1,j-1,ct+1,ma),ma);
     }
   }
   if(i-1 > -1 and j-1 > -1){ //north west
     if(a[i-1][j-1] >= 0){
-      fire(a,r,c,i-1,j-1,ct+1);
+      ma = max(fire(a,r,c,i-1,j-1,ct+1,ma),ma);
     }
   }
   if(i-1 > -1 and j+1 < c){ //north east
     if(a[i-1][j+1] >= 0){
-      fire(a,r,c,i-1,j+1,ct+1);
+      ma = max(fire(a,r,c,i-1,j+1,ct+1,ma),ma);
     }
   }
   if(i+1 < r){ //south
     if(a[i+1][j] >= 0){
-      fire(a,r,c,i+1,j,ct+1);
-    }    
+      ma = max(fire(a,r,c,i+1,j,ct+1,ma),ma);
+    }
   }
   if(i-1 > -1){ //north
     if(a[i-1][j] >= 0){
-      fire(a,r,c,i-1,j,ct+1);
+      ma = max(fire(a,r,c,i-1,j,ct+1,ma),ma);
     }
   }
   if(j-1 > -1){ //west
     if(a[i][j-1] >= 0){
-      fire(a,r,c,i,j-1,ct+1);
+      ma = max(fire(a,r,c,i,j-1,ct+1,ma),ma);
     }
   }
   if(j+1 < c){ //east
     if(a[i][j+1] >= 0){
-      fire(a,r,c,i,j+1,ct+1);
+      ma = max(fire(a,r,c,i,j+1,ct+1,ma),ma);
     }
   }
-  return;
+  return ma;
 }
 
 int main()
 {
-  int r,c,r1,c1,mt=0;
+  int r,c,r1,c1;
   cin>>r>>c;
   cin>>r1>>c1;
   vector <vector<int>> arr;
@@ -104,7 +147,7 @@ int main()
     for(int j = 0; j < c; j++){
       char t;
       cin>>t;
-      if(t == 't'){
+      if(t == 'T'){
         a[j] = 0;
       }
       else{
@@ -113,18 +156,7 @@ int main()
     }
     arr.push_back(a);
   }
-  
-  fire(arr,r,c,r1,c1);
-
-  for(int i = 0; i < r; i++){
-    for(int j = 0; j < c; j++){
-      if(mt < arr[i][j])
-      {
-        mt = arr[i][j];
-      }    
-    }
-  }
-  cout<<mt;
+  cout<<fire(arr,r,c,r1,c1);
 }
 
 // another solution
@@ -165,7 +197,7 @@ int main()
     for(int j = 0; j < c; j++){
       char t;
       cin>>t;
-      if(t == 't'){
+      if(t == 'T'){
         a[j] = 0;
       }
       else{
